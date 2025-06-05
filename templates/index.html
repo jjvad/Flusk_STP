@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+
+{% block title %}Главная страница{% endblock %}
+
+{% block content %}
+    <h1>Последние новости</h1>
+    
+    {% if not news_list %}
+        <div class="card">
+            <p>Пока нет новостей. Будьте первым, кто добавит новость!</p>
+        </div>
+    {% else %}
+        {% for news in news_list %}
+            <div class="card">
+                <h2 class="news-title">{{ news.title }}</h2>
+                <p class="news-meta">
+                    Автор: {{ news.author.first_name }} {{ news.author.last_name }}
+                    <br>
+                    <small>ID автора: {{ news.user_id }}</small>
+                </p>
+                <div class="news-content">
+                    {{ news.content|safe }}
+                </div>
+                
+                {% if 'user_id' in session and session['user_id'] == news.user_id %}
+                    <div style="margin-top: 15px;">
+                        <a href="{{ url_for('edit_news', id=news.id) }}" class="btn">Редактировать</a>
+                        <a href="{{ url_for('delete_news', id=news.id) }}" class="btn btn-danger" 
+                           onclick="return confirm('Вы уверены, что хотите удалить эту новость?')">
+                            Удалить
+                        </a>
+                    </div>
+                {% endif %}
+            </div>
+        {% endfor %}
+    {% endif %}
+{% endblock %}

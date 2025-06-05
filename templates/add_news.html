@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+
+{% block title %}Добавить новость{% endblock %}
+
+{% block content %}
+    <div class="card">
+        <h1>Добавить новость</h1>
+        <form method="POST" action="{{ url_for('add_news') }}">
+            <div class="form-group">
+                <label for="title">Заголовок:</label>
+                <input type="text" id="title" name="title" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="content">Содержание:</label>
+                <textarea id="content" name="content" required></textarea>
+            </div>
+            
+            <button type="submit" class="btn">Добавить новость</button>
+        </form>
+    </div>
+{% endblock %}

@@ -1,0 +1,78 @@
+{% extends "base.html" %}
+
+{% block title %}API Тестер{% endblock %}
+
+{% block content %}
+    <div class="card">
+        <h1>API Тестер</h1>
+        <p>Используйте эту страницу для тестирования API приложения</p>
+        
+        <div class="form-group">
+            <h3>Пользователи</h3>
+            <button onclick="testEndpoint('/api/users', 'GET')" class="btn">GET Все пользователи</button>
+            
+            <div style="margin-top: 15px;">
+                <input type="text" id="userData" placeholder='{"first_name":"John", "last_name":"Doe", "email":"john@example.com", "password":"pass"}' 
+                       style="width: 100%; padding: 10px; margin-bottom: 10px;">
+                <button onclick="testEndpoint('/api/users', 'POST', document.getElementById('userData').value)" 
+                        class="btn">POST Создать пользователя</button>
+            </div>
+        </div>
+        
+        <div class="form-group">
+            <h3>Новости</h3>
+            <button onclick="testEndpoint('/api/news', 'GET')" class="btn">GET Все новости</button>
+            
+            <div style="margin-top: 15px;">
+                <input type="text" id="newsData" placeholder='{"title":"Breaking News", "content":"Content here", "user_id":1}' 
+                       style="width: 100%; padding: 10px; margin-bottom: 10px;">
+                <button onclick="testEndpoint('/api/news', 'POST', document.getElementById('newsData').value)" 
+                        class="btn">POST Создать новость</button>
+            </div>
+        </div>
+        
+        <div class="form-group">
+            <h3>Индивидуальные ресурсы</h3>
+            <input type="text" id="resourceId" placeholder="ID ресурса" style="padding: 10px; margin-bottom: 10px;">
+            
+            <div>
+                <button onclick="testEndpoint('/api/users/' + document.getElementById('resourceId').value, 'GET')" 
+                        class="btn">GET Пользователь</button>
+                <button onclick="testEndpoint('/api/news/' + document.getElementById('resourceId').value, 'GET')" 
+                        class="btn">GET Новость</button>
+            </div>
+            
+            <div style="margin-top: 10px;">
+                <button onclick="testEndpoint('/api/users/' + document.getElementById('resourceId').value, 'DELETE')" 
+                        class="btn btn-danger">DELETE Пользователь</button>
+                <button onclick="testEndpoint('/api/news/' + document.getElementById('resourceId').value, 'DELETE')" 
+                        class="btn btn-danger">DELETE Новость</button>
+            </div>
+        </div>
+        
+        <h3>Результат:</h3>
+        <pre id="result" style="background: #f8f9fa; padding: 15px; border-radius: 4px; max-height: 300px; overflow: auto;"></pre>
+    </div>
+
+    <script>
+        async function testEndpoint(endpoint, method, data = null) {
+            const options = {
+                method: method,
+                headers: {'Content-Type': 'application/json'}
+            };
+            
+            try {
+                // Парсим данные если они есть
+                if (data) {
+                    options.body = JSON.stringify(JSON.parse(data));
+                }
+                
+                const response = await fetch(endpoint, options);
+                const result = await response.json();
+                document.getElementById('result').innerText = JSON.stringify(result, null, 2);
+            } catch (error) {
+                document.getElementById('result').innerText = 'Error: ' + error.message;
+            }
+        }
+    </script>
+{% endblock %}
